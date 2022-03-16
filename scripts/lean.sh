@@ -191,24 +191,13 @@ rm -rf 02_network
 wget https://raw.githubusercontent.com/DHDAXCW/RK356X/master/target/linux/rockchip/armv8/base-files/etc/board.d/02_network
 popd
 
-# Generic for the device tree
-#pushd target/linux/rockchip/patches-5.4
-#cp -f $GITHUB_WORKSPACE/scripts/patchs/996-Generic-for-the-device-tree.patch 996-Generic-for-the-device-tree.patch
-#popd
-
-# Priority SD u boot
-#pushd package/boot/uboot-rockchip/patches
-#cp -f $GITHUB_WORKSPACE/scripts/patchs/106-rockchip-rk3399-Priority-SD-boot.patch 106-rockchip-rk3399-Priority-SD-boot.patch
-#popd
-
 # Change default shell to zsh
 sed -i 's/\/bin\/ash/\/usr\/bin\/zsh/g' package/base-files/files/etc/passwd
 
 # Modify default IP
 sed -i 's/192.168.1.1/192.168.2.1/g' package/base-files/files/bin/config_generate
-sed -i '/uci commit system/i\uci set system.@system[0].hostname='FusionWrt'' package/lean/default-settings/files/zzz-default-settings
-sed -i "s/OpenWrt /DHDAXCW @ FusionWrt /g" package/lean/default-settings/files/zzz-default-settings
-# find package/*/ feeds/*/ -maxdepth 6 -path "*luci-app-smartdns/luasrc/controller/smartdns.lua" | xargs -i sed -i 's/\"SmartDNS\")\, 4/\"SmartDNS\")\, 3/g' {} 
+#sed -i '/uci commit system/i\uci set system.@system[0].hostname='FusionWrt'' package/lean/default-settings/files/zzz-default-settings
+#sed -i "s/OpenWrt /DHDAXCW @ FusionWrt /g" package/lean/default-settings/files/zzz-default-settings
 
 # Test kernel 5.4
 sed -i 's/5.15/5.4/g' target/linux/rockchip/Makefile
