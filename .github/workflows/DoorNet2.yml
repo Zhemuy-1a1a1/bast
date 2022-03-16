@@ -23,7 +23,7 @@ env:
 jobs:
   Build:
     runs-on: ubuntu-20.04
-    if: github.repository == 'DHDAXCW/DoorNet2'
+    if: github.repository == 'DHDAXCW/bast'
     outputs:
       OPENWRTROOT: ${{ steps.update.outputs.OPENWRTROOT }}
       PLATFORM: ${{ steps.compile.outputs.PLATFORM }}
@@ -202,7 +202,7 @@ jobs:
   Upload:
     needs: [Build]
     runs-on: ubuntu-20.04
-    if: github.repository == 'DHDAXCW/DoorNet2'
+    if: github.repository == 'DHDAXCW/bast'
     steps:
       - name: Checkout
         uses: actions/checkout@main
