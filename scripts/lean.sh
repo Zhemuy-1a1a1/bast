@@ -202,7 +202,7 @@ sed -i 's/192.168.1.1/192.168.5.1/g' package/base-files/files/bin/config_generat
 #sed -i "s/OpenWrt /DHDAXCW @ FusionWrt /g" package/lean/default-settings/files/zzz-default-settings
 
 # Test kernel 5.4
-sed -i 's/5.15/5.4/g' target/linux/rockchip/Makefile
+sed -i 's/5.15/5.10/g' target/linux/rockchip/Makefile
 
 # upgrade the kernel
 #pushd include
