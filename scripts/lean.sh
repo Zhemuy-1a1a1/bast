@@ -4,6 +4,9 @@
 rm -rf ./feeds/packages/admin/netdata
 svn co https://github.com/DHDAXCW/packages/branches/ok/admin/netdata ./feeds/packages/admin/netdata
 
+# Add luci-app-passwall
+git clone --depth=1 https://github.com/MilesPoupart/openwrt-passwall ./package/lean/openwrt-passwall
+
 # Add cpufreq
 rm -rf ./feeds/luci/applications/luci-app-cpufreq 
 svn co https://github.com/immortalwrt/luci/trunk/applications/luci-app-cpufreq ./feeds/luci/applications/luci-app-cpufreq
@@ -12,8 +15,11 @@ sed -i 's,1608,1800,g' feeds/luci/applications/luci-app-cpufreq/root/etc/uci-def
 sed -i 's,2016,2208,g' feeds/luci/applications/luci-app-cpufreq/root/etc/uci-defaults/cpufreq
 sed -i 's,1512,1608,g' feeds/luci/applications/luci-app-cpufreq/root/etc/uci-defaults/cpufreq
 rm -rf ./target/linux/rockchip/armv8/base-files/etc/hotplug.d
-rm -rf ./package/kernel/linux/modules/fs.mk
-wget -P ./package/kernel/linux/modules/ https://raw.githubusercontent.com/LPDDR6-10000MHz/lede/master/package/kernel/linux/modules/fs.mk
+pushd target/linux/rockchip/image
+rm -rf armv8.mk
+wget https://raw.githubusercontent.com/DHDAXCW/lede/master/target/linux/rockchip/image/armv8.mk
+popd
+
 # Clone community packages to package/community
 mkdir package/community
 pushd package/community
@@ -28,22 +34,15 @@ rm -rf ../../customfeeds/luci/applications/luci-app-netdata
 git clone --depth=1 https://github.com/sirpdboy/luci-app-netdata
 
 # Add luci-app-ssr-plus
-git clone --depth=1 https://github.com/fw876/helloworld.git
+git clone --depth=1 https://github.com/DHDAXCW/helloworld
 
 # Add luci-app-unblockneteasemusic
 rm -rf ../../customfeeds/luci/applications/luci-app-unblockmusic
 git clone --depth=1 https://github.com/UnblockNeteaseMusic/luci-app-unblockneteasemusic.git
 
-# Add luci-app-passwall
-#git clone --depth=1 https://github.com/xiaorouji/openwrt-passwall
-
 # Add luci-app-vssr <M>
 git clone --depth=1 https://github.com/jerrykuku/lua-maxminddb.git
 git clone --depth=1 https://github.com/jerrykuku/luci-app-vssr
-
-# Add mentohust & luci-app-mentohust
-git clone --depth=1 https://github.com/BoringCat/luci-app-mentohust
-git clone --depth=1 https://github.com/KyleRicardo/MentoHUST-OpenWrt-ipk
 
 # Add luci-proto-minieap
 git clone --depth=1 https://github.com/ysc3839/luci-proto-minieap
@@ -100,14 +99,14 @@ cp -f $GITHUB_WORKSPACE/data/bg1.jpg luci-theme-argon/htdocs/luci-static/argon/i
 git clone --depth=1 https://github.com/tindy2013/openwrt-subconverter
 
 # Add extra wireless drivers
-svn co https://github.com/immortalwrt/immortalwrt/branches/openwrt-18.06-k5.4/package/kernel/rtl8812au-ac
+# svn co https://github.com/immortalwrt/immortalwrt/branches/openwrt-18.06-k5.4/package/kernel/rtl8812au-ac
 # svn co https://github.com/immortalwrt/immortalwrt/branches/openwrt-18.06-k5.4/package/kernel/rtl8821cu
 # svn co https://github.com/immortalwrt/immortalwrt/branches/openwrt-18.06-k5.4/package/kernel/rtl8188eu
 # svn co https://github.com/immortalwrt/immortalwrt/branches/openwrt-18.06-k5.4/package/kernel/rtl8192eu
-svn co https://github.com/immortalwrt/immortalwrt/branches/openwrt-18.06-k5.4/package/kernel/rtl88x2bu
+# svn co https://github.com/immortalwrt/immortalwrt/branches/openwrt-18.06-k5.4/package/kernel/rtl88x2bu
 
 # Add luci-app-smartdns & smartdns
-svn co https://github.com/281677160/openwrt-package/trunk/feeds/luci/applications/luci-app-smartdns
+svn co https://github.com/281677160/openwrt-package/trunk/luci-app-smartdns
 
 # Add luci-app-services-wolplus
 svn co https://github.com/msylgj/OpenWrt_luci-app/trunk/luci-app-services-wolplus
@@ -154,22 +153,10 @@ export date_version=$(date -d "$(rdate -n -4 -p ntp.aliyun.com)" +'%Y-%m-%d')
 sed -i "s/${orig_version}/${orig_version} (${date_version})/g" zzz-default-settings
 popd
 
-# Fix libssh
-# pushd feeds/packages/libs
-# rm -rf libssh
-# svn co https://github.com/openwrt/packages/trunk/libs/libssh
-# popd
-
 # Use Lienol's https-dns-proxy package
 pushd feeds/packages/net
 rm -rf https-dns-proxy
 svn co https://github.com/Lienol/openwrt-packages/trunk/net/https-dns-proxy
-popd
-
-# Use snapshots syncthing package
-pushd feeds/packages/utils
-rm -rf syncthing
-svn co https://github.com/openwrt/packages/trunk/utils/syncthing
 popd
 
 # Fix mt76 wireless driver
@@ -183,43 +170,20 @@ pushd po2lmo
 make && sudo make install
 popd
 
-# rm -rf ./package/kernel/linux/modules/video.mk
-# wget -P package/kernel/linux/modules/ https://github.com/immortalwrt/immortalwrt/raw/master/package/kernel/linux/modules/video.mk
-
-# Save Ethernet MAC address to eMMC/TF
-pushd target/linux/rockchip/armv8/base-files/etc/board.d
-rm -rf 02_network
-wget https://raw.githubusercontent.com/DHDAXCW/RK356X/master/target/linux/rockchip/armv8/base-files/etc/board.d/02_network
-popd
-
-# Generic for the device tree
-#pushd target/linux/rockchip/patches-5.4
-#cp -f $GITHUB_WORKSPACE/scripts/patchs/996-Generic-for-the-device-tree.patch 996-Generic-for-the-device-tree.patch
-#popd
-
-# Priority SD u boot
-#pushd package/boot/uboot-rockchip/patches
-#cp -f $GITHUB_WORKSPACE/scripts/patchs/106-rockchip-rk3399-Priority-SD-boot.patch 106-rockchip-rk3399-Priority-SD-boot.patch
-#popd
-
 # Change default shell to zsh
 sed -i 's/\/bin\/ash/\/usr\/bin\/zsh/g' package/base-files/files/etc/passwd
 
 # Modify default IP
-sed -i 's/192.168.1.1/192.168.5.1/g' package/base-files/files/bin/config_generate
+sed -i 's/192.168.1.1/192.168.11.1/g' package/base-files/files/bin/config_generate
+sed -i '/uci commit system/i\uci set system.@system[0].hostname='FusionWrt'' package/lean/default-settings/files/zzz-default-settings
+sed -i "s/OpenWrt /DHDAXCW @ FusionWrt /g" package/lean/default-settings/files/zzz-default-settings
 
 # Test kernel 5.4
-sed -i 's/5.15/5.4/g' target/linux/rockchip/Makefile
-
-# upgrade the kernel
-#pushd include
-#rm -rf kernel-5.4
-#wget https://raw.githubusercontent.com/DHDAXCW/lede/master/include/kernel-5.4
-#popd
+# sed -i 's/5.15/5.10/g' target/linux/rockchip/Makefile
 
 # Custom configs
 # git am $GITHUB_WORKSPACE/patches/lean/*.patch
-git am $GITHUB_WORKSPACE/patches/*.patch
+# git am $GITHUB_WORKSPACE/patches/*.patch
 
 echo -e " DHDAXCW's FusionWrt built on "$(date +%Y.%m.%d)"\n -----------------------------------------------------" >> package/base-files/files/etc/banner
 echo 'net.bridge.bridge-nf-call-iptables=0' >> package/base-files/files/etc/sysctl.conf
