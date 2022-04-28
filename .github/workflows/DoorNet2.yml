@@ -20,7 +20,7 @@ env:
 jobs:
   Build:
     runs-on: self-hosted
-    if: github.repository == 'DHDAXCW/bast'
+    if: github.repository == 'Zhemuy-1a1a1/bast'
     outputs:
       OPENWRTROOT: ${{ steps.update.outputs.OPENWRTROOT }}
       PLATFORM: ${{ steps.compile.outputs.PLATFORM }}
@@ -113,11 +113,11 @@ jobs:
       run: |
         cd $OPENWRTROOT
         echo -e "$(nproc) thread compile"
-        make tools/compile -j$(nproc) || make tools/compile -j72
-        make toolchain/compile -j$(nproc) || make toolchain/compile -j72
-        make target/compile -j$(nproc) || make target/compile -j72 IGNORE_ERRORS=1
+        make tools/compile -j$(nproc) || make tools/compile -j8
+        make toolchain/compile -j$(nproc) || make toolchain/compile -j8
+        make target/compile -j$(nproc) || make target/compile -j8 IGNORE_ERRORS=1
         make diffconfig
-        make package/compile -j$(nproc) IGNORE_ERRORS=1 || make package/compile -j72 IGNORE_ERRORS=1
+        make package/compile -j$(nproc) IGNORE_ERRORS=1 || make package/compile -j8 IGNORE_ERRORS=1
         make package/index
         cd $OPENWRTROOT/bin/packages/*
         PLATFORM=$(basename `pwd`)
